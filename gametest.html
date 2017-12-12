@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game</title>
+    <style>
+    .Gameboard {
+      background-color: #f1f1f1;
+    }
+    .HealthBar{
+      background-color: #a0a0a0;
+    }
+    .body{
+      background-color: black;
+      text-align: center;
+    }
+    </style>
+  </head>
+  <body onload="start()" class="body">
+    <script>
+    var player1;
+    var player2;
+    var key;
+    var ready1, ready2 = false;
+    var spam1, spam2 = true;
+    function start(){
+      GameArea.start();
+      document.body.insertBefore(document.createElement("br"), document.body.childNodes[1]);
+      healthBar.start();
+      var playerImg = new Image();
+      playerImg.src = "player.png";
+      playerImg.addEventListener("load", function() {
+        player1 = new player(30,30,playerImg, 0, 0, 0, 0);
+        player1.update();
+        ready1 = true;
+        if (ready2){
+          setup();
+        }
+        document.addEventListener("keydown",keyDownHandler, false);
+		document.addEventListener("keyup",keyUpHandler, false);
+      });
+
+      var enemyImg = new Image();
+      enemyImg.src = "enemy.png";
+      enemyImg.addEventListener("load", function() {
+        player2 = new player(30,30,enemyImg, 30, 0, 0, 0);
+        player2.update();
+        ready2 = true;
+        if (ready1){
+          setup();
+        }
+      }, false);
+  }
+    var GameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.className = "Gameboard"
+        this.canvas.width = 480;
+        this.canvas.height = 270;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+  }
+  var healthBar = {
+  canvas : document.createElement("canvas"),
+  start : function() {
+      this.canvas.className = "HealthBar";
+      this.canvas.width = 480;
+      this.canvas.height = 20;
+      this.context = this.canvas.getContext("2d");
+      document.body.insertBefore(this.canvas, document.body.childNodes[2]);
+      this.frameNo = 0;
+      },
+  clear : function() {
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+  }
+
+  function player(width, height, img, x, y, xs, ys){
+    this.img = img;
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+
+    this.leftside = x;
+    this.rightside = x + width;
+    this.upside = y;
+    this.downside = y + height;
+
+    this.Xspeed = xs;
+    this.Yspeed = ys;
+    this.gravity = 0;
+    this.gravitySpeed = 0;
+
+    this.health = 3;
+
+    this.bullets = []
+    this.update = function() {
+      GameArea.context.drawImage(this.img, this.x, this.y);
+    }
+    this.createBullet = function() {
+      var bullet = {x: this.x + this.width, y: this.y, Xspeed: 10, Yspeed: 0, width: 10, height: 5};
+      GameArea.context.fillStyle = "black";
+      GameArea.context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+      this.bullets.splice(this.bullets.length, 0, bullet);
+    }
+  }
+
+  function drawhealth() {
+    healthBar.clear();
+    var img = new Image();
+    img.src = "heart.png";
+    img.addEventListener('load', function() {
+    for (i = 1; i <= player1.health; i++){
+      healthBar.context.drawImage(img,i * img.width - img.width, 0);
+   }
+  for (i = 1; i <= player2.health; i++){
+    healthBar.context.drawImage(img, healthBar.canvas.width - i * img.width, 0);
+  }
+  }, false);
+  }
+
+  function keyDownHandler(event){
+    key = event.keyCode;
+  }
+  function keyUpHandler(event){
+    key = 0;
+  }
+
+  function updategame(){
+    if (key == 37){
+      if (player2.Xspeed > -5){
+      player2.Xspeed -= 1; // left
+    }
+  } if (key == 38){
+      if (player2.Yspeed > -5){
+      player2.Yspeed -= 1; // up
+    }
+    }  if (key == 39){
+      if (player2.Xspeed < 5){
+      player2.Xspeed += 1; //right
+    }
+    }  if (key == 40){
+      if (player2.Yspeed < 5){
+      player2.Yspeed += 1 // down
+    } if (key == 16) {
+      player2.createBullet();
+    }
+    } if (key == 65){ // a
+      if (player1.Xspeed > -5){
+      player1.Xspeed -= 1;
+    }
+    } if (key == 87){ // w
+      if (player1.Yspeed > -5){
+      player1.Yspeed -= 1;
+    }
+    } if (key == 68){ // d
+      if (player1.Xspeed < 5){
+      player1.Xspeed += 1;
+    }
+    } if (key == 83){ // s
+      if (player1.Yspeed < 5){
+      player1.Yspeed += 1;
+    }
+  } if(key == 69){ // e
+      player1.createBullet();
+  }
+    player1.x += player1.Xspeed;
+    player1.y += player1.Yspeed;
+
+    player2.x += player2.Xspeed;
+    player2.y += player2.Yspeed;
+    if (player1.x < 0){
+      player1.x = 0;
+    } else if (player1.x > GameArea.canvas.width - player1.width) {
+      player1.x = GameArea.canvas.width - player1.width;
+    } else if (player1.y < 0) {
+      player1.y = 0;
+    } else if (player1.y >= GameArea.canvas.height - player1.height) {
+      player1.y = GameArea.canvas.height - player1.height;
+    }
+
+    if (player2.x < 0){
+      player2.x = 0;
+    } else if (player2.x > GameArea.canvas.width - player2.width) {
+      player2.x = GameArea.canvas.width - player2.width;
+    } else if (player2.y < 0) {
+      player2.y = 0;
+    } else if (player2.y > GameArea.canvas.height - player2.height) {
+      player2.y = GameArea.canvas.height - player2.height;
+    } if (key < 37 && key != 16 || key > 87 || key > 40 && key < 65) {
+      if (player1.Xspeed > 0) {
+        player1.Xspeed--;
+      }else if (player1.Xspeed < 0) {
+        player1.Xspeed++ ;
+      }
+      if (player1.Yspeed > 0){
+        player1.Yspeed--;
+      } else if (player1.Yspeed < 0) {
+        player1.Yspeed++;
+      }
+      if (player2.Xspeed > 0){
+        player2.Xspeed--;
+      }else if (player2.Xspeed < 0) {
+        player2.Xspeed++;
+      }
+      if (player2.Yspeed > 0) {
+        player2.Yspeed--;
+      }else if (player2.Yspeed < 0){
+        player2.Yspeed++;
+      }
+    }
+
+    GameArea.clear();
+
+    player1.update();
+    player2.update();
+
+    if (player1.bullets.length > 0){
+      for (i = 0; i < player1.bullets.length; i++){
+        player1.bullets[i].x += player1.bullets[i].Xspeed;
+        if (player1.bullets[i].y >= GameArea.canvas.width){
+          player.bullets.splice(i,1);
+          i--;
+
+        }
+        GameArea.context.fillRect(player1.bullets[i].x, player1.bullets[i].y, player1.bullets[i].width, player1.bullets[i].height);
+      }
+    }
+  }
+
+
+  function setup(){
+    drawhealth();
+    window.setInterval(updategame, 1000/30);
+
+  }
+    </script>
+  </body>
+</html>
