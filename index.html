@@ -165,22 +165,23 @@
       if (player2.Xspeed > -5){
       player2.Xspeed -= 1; // left
     }
-  } if (key == 38){
+  }
+  if (key == 38){
       if (player2.Yspeed > -5){
       player2.Yspeed -= 1; // up
     }
-    }  if (key == 39){
+  }  if (key == 39){
       if (player2.Xspeed < 5){
       player2.Xspeed += 1; //right
     }
-    }  if (key == 40){
+  }  if (key == 40){
       if (player2.Yspeed < 5){
-      player2.Yspeed += 1 // down
-    } if (key == 32) {
-      console.log("test");
-      player2.createBullet();
+      player2.Yspeed += 1; // down
     }
-    } if (key == 65){ // a
+  } if (key == 16) {
+      player2.createBullet(); // shift
+  }
+   if (key == 65){ // a
       if (player1.Xspeed > -5){
       player1.Xspeed -= 1;
     }
