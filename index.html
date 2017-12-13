@@ -27,9 +27,9 @@
       document.body.insertBefore(document.createElement("br"), document.body.childNodes[1]);
       healthBar.start();
       var playerImg = new Image();
-      playerImg.src = "player.png";
+      playerImg.src = "player_right.png";
       playerImg.addEventListener("load", function() {
-        player1 = new player(30,30,playerImg, 0, 0, 0, 0);
+        player1 = new player(30,30,playerImg, 0, 0, 0, 0, false);
         player1.update();
         ready1 = true;
         if (ready2){
@@ -40,9 +40,9 @@
       });
 
       var enemyImg = new Image();
-      enemyImg.src = "enemy.png";
+      enemyImg.src = "enemy_left.png";
       enemyImg.addEventListener("load", function() {
-        player2 = new player(30,30,enemyImg, 30, 0, 0, 0);
+        player2 = new player(30,30,enemyImg, 30, 0, 0, 0, true);
         player2.update();
         ready2 = true;
         if (ready1){
@@ -79,7 +79,7 @@
   }
   }
 
-  function player(width, height, img, x, y, xs, ys){
+  function player(width, height, img, x, y, xs, ys, left){
     this.img = img;
     this.width = width;
     this.height = height;
@@ -97,13 +97,18 @@
     this.gravitySpeed = 0;
 
     this.health = 3;
+    this.left = left
 
     this.bullets = []
     this.update = function() {
       GameArea.context.drawImage(this.img, this.x, this.y);
     }
     this.createBullet = function() {
-      var bullet = {x: this.x + this.width, y: this.y, Xspeed: 10, Yspeed: 0, width: 10, height: 5};
+      if (this.left){
+        var bullet = {x: this.x + this.width, y: this.y, Xspeed: -10, Yspeed: 0, width: 10, height: 5};
+      } else {
+        var bullet = {x: this.x + this.width, y: this.y, Xspeed: 10, Yspeed: 0, width: 10, height: 5};
+      }
       GameArea.context.fillStyle = "black";
       GameArea.context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
       this.bullets.splice(this.bullets.length, 0, bullet);
@@ -132,7 +137,30 @@
   }
 
   function updategame(){
-    if (!gameOver){
+  if (!gameOver){
+    if (player1.x < player2.x && player1.left == true && player2.left == false){
+      var p1Img = new Image();
+      p1Img.src = "player_right.png";
+      player1.img = p1Img
+      player1.left = false
+
+      var p2Img = new Image();
+      p2Img.src = "enemy_left.png"
+      player2.img = p2Img;
+      player2.left = true
+    }
+    if (player2.x < player1.x && player2.left == true && player1.left == false) {
+
+      var p1Img = new Image();
+      p1Img.src = "player_left.png";
+      player1.img = p1Img;
+      player1.left = true
+
+      var p2Img = new Image();
+      p2Img.src = "enemy_right.png"
+      player2.img = p2Img;
+      player2.left = false
+    }
     if (key == 37){
       if (player2.Xspeed > -5){
       player2.Xspeed -= 1; // left
@@ -268,7 +296,6 @@
             GameArea.clear();
             GameArea.context.font = "30px Arial";
             GameArea.context.fillText("player1 won!", GameArea.canvas.width / 2 - 30, GameArea.canvas.height / 2 - 30);
-            console.log("test");
             gameOver = true;
           }
         }
@@ -287,7 +314,6 @@ if (player2.bullets.length > 0) {
         GameArea.clear();
         GameArea.context.font = "30px Arial";
         GameArea.context.fillText("player2 won!", GameArea.canvas.width / 2 - 30, GameArea.canvas.height / 2 - 30);
-        console.log("test");
         gameOver = true;
       }
     }

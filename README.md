@@ -1,2 +1,2 @@
-# HTMLgame.com
+# Game
 # By: Jake Jenkins
