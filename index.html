@@ -333,8 +333,11 @@
 }
 
 if (player2.bullets.length > 0) {
+	console.log("player1 test");
   for (i = 0; i <= player2.bullets.length - 1; i++){
+	console.log("player1 test1");
     if (player1.x <= player2.bullets[i].x + player2.bullets[i].width && player1.x + player1.width >= player2.bullets[i].x + player2.bullets[i].width && player2.bullets[i].y >= player1.y && player2.bullets[i].y <= player1.downside) {
+	    console.log("player1 test2");
       player2.bullets.splice(i,1);
       i--;
       healthBar.clear();
