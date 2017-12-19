@@ -169,47 +169,47 @@
       player2.img = p2Img;
       player2.left = false
     }
-    if (key == 37){
+    if (map[37]){
       if (player2.Xspeed > -5){
       player2.Xspeed -= 1; // left
     }
   }
-  if (key == 38){
+  if (map[38]){
       if (player2.Yspeed > -5){
       player2.Yspeed -= 1; // up
     }
-  }  if (key == 39){
+  }  if (map[39]){
       if (player2.Xspeed < 5){
       player2.Xspeed += 1; //right
     }
-  }  if (key == 40){
+  }  if (key == map[40]){
       if (player2.Yspeed < 5){
       player2.Yspeed += 1; // down
     }
-  } if (key == 16) {
+  } if (map[16]) {
       if (!shoot2) {
           player2.createBullet(); // shift
           shoot2 = true;
           window.setTimeout(function(){shoot2 = false;}, 500);
       }
   }
-   if (key == 65){ // a
+   if (map[65]){ // a
       if (player1.Xspeed > -5){
       player1.Xspeed -= 1;
     }
-    } if (key == 87){ // w
+    } if (map[87]){ // w
       if (player1.Yspeed > -5){
       player1.Yspeed -= 1;
     }
-    } if (key == 68){ // d
+    } if (map[68]){ // d
       if (player1.Xspeed < 5){
       player1.Xspeed += 1;
     }
-    } if (key == 83){ // s
+    } if (map[83]){ // s
       if (player1.Yspeed < 5){
       player1.Yspeed += 1;
     }
-  } if(key == 69){ // e
+  } if(map[69]){ // e
     if (!shoot1){
       player1.createBullet();
       shoot1 = true;
