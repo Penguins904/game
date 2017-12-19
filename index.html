@@ -138,7 +138,7 @@
   }
 
   function keyDownHandler(event){
-    key = event.keyCode;
+    map[event.keyCode] = event.type == 'keydown';
     }
   function keyUpHandler(event){
     key = 0;
