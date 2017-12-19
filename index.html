@@ -140,10 +140,10 @@
   }
 
   function keyDownHandler(event){
-    map[event.keyCode] = event.type == 'keydown';
+    map[event.keycode] = true;
     }
   function keyUpHandler(event){
-    map = [];
+    map[event.keycode] = false;
   }
 
   function updategame(){
