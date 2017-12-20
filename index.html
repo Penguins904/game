@@ -141,7 +141,8 @@
 
   function keyDownHandler(event){
     map[event.keycode] = true;
-	  console.log("test", map, event.keycode);
+	  key = event,keycode;
+	  console.log("test", map, key);
     }
   function keyUpHandler(event){
     delete map[event.keycode];
