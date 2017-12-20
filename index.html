@@ -141,6 +141,7 @@
 
   function keyDownHandler(event){
     map[event.keycode] = true;
+	  console.log("test");
     }
   function keyUpHandler(event){
     delete map[event.keycode];
@@ -189,6 +190,7 @@
       player2.Yspeed += 1; // down
     }
   } if (map[16]) {
+	  console.log("test2");
       if (!shoot2) {
           player2.createBullet(); // shift
           shoot2 = true;
