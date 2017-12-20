@@ -351,7 +351,7 @@ if (player2.bullets.length > 0) {
       drawhealth();
       if (player1.health <= 0) {
         GameArea.clear();
-        GameArea.context.font = "30px Arial";
+        GameArea.context.font = "30px Times";
         GameArea.context.fillText("player2 won!", GameArea.canvas.width / 2 - 30, GameArea.canvas.height / 2 - 30);
         gameOver = true;
       }
