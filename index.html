@@ -140,12 +140,12 @@
   }
 
   function keyDownHandler(event){
-    map[event.keycode] = true;
-	  key = event,keycode;
+    map[event.keyCode] = true;
+	  key = event,keyCode;
 	  console.log("test", map, key);
     }
   function keyUpHandler(event){
-    delete map[event.keycode];
+    delete map[event.keyCode];
   }
 
   function updategame(){
