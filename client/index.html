@@ -30,6 +30,7 @@
     var key;
     var ready1, ready2, gameOver, shoot1, shoot2 = false;
     var spam1, spam2 = true;
+    var imgFolder = "http://Penguins904.github.io/game/client/img/"
 	var map = {};
 
     function start(){
@@ -37,7 +38,7 @@
       document.body.insertBefore(document.createElement("br"), document.body.childNodes[1]);
       healthBar.start();
       var playerImg = new Image();
-      playerImg.src = "http://Penguins904.github.io/game/client/img/player_right.png";
+      playerImg.src = imgFolder + "player_right.png";
       playerImg.addEventListener("load", function() {
         player1 = new player(30,30,playerImg, 0, 0, 0, 0, false);
         player1.update();
@@ -50,7 +51,7 @@
       });
 
       var enemyImg = new Image();
-      enemyImg.src = "~/img/enemy_left.png";
+      enemyImg.src = imgFolder + "enemy_left.png";
       enemyImg.addEventListener("load", function() {
         player2 = new player(30,30,enemyImg, GameArea.canvas.width - 1 - 30, 0, 0, 0, true);
         player2.update();
@@ -150,24 +151,24 @@
   if (!gameOver){
     if (player1.x < player2.x && player1.left == true && player2.left == false){
       var p1Img = new Image();
-      p1Img.src = "player_right.png";
+      p1Img.src = imgFolder + "player_right.png";
       player1.img = p1Img
       player1.left = false
 
       var p2Img = new Image();
-      p2Img.src = "enemy_left.png"
+      p2Img.src = imgFolder + "enemy_left.png"
       player2.img = p2Img;
       player2.left = true
     }
     if (player2.x < player1.x && player2.left == true && player1.left == false) {
 
       var p1Img = new Image();
-      p1Img.src = "player_left.png";
+      p1Img.src = imgFolder + "player_left.png";
       player1.img = p1Img;
       player1.left = true
 
       var p2Img = new Image();
-      p2Img.src = "enemy_right.png"
+      p2Img.src = imgFolder + "enemy_right.png"
       player2.img = p2Img;
       player2.left = false
     }
