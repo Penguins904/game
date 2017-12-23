@@ -129,7 +129,7 @@
   function drawhealth() {
     healthBar.clear();
     var img = new Image();
-    img.src = "heart.png";
+    img.src = imgFolder + "heart.png";
     img.addEventListener('load', function() {
     for (i = 1; i <= player1.health; i++){
       healthBar.context.drawImage(img,i * img.width - img.width, 0);
