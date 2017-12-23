@@ -1,0 +1,29 @@
+{
+  "name": "html_game",
+  "version": "1.0.2",
+  "description": "2 player shooter",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^1.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Penguins904/game.git"
+  },
+  "keywords": [
+    "html5",
+    "game",
+    "js"
+  ],
+  "author": "Jake Jenkins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Penguins904/game/issues"
+  },
+  "homepage": "https://github.com/Penguins904/game#readme"
+}
