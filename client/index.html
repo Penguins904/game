@@ -23,7 +23,7 @@
     </style>
   </head>
   <body onload="start()" class="body">
-    
+
     <script>
     var player1;
     var player2;
@@ -31,7 +31,7 @@
     var ready1, ready2, gameOver, shoot1, shoot2 = false;
     var spam1, spam2 = true;
 	var map = {};
-	
+
     function start(){
       GameArea.start();
       document.body.insertBefore(document.createElement("br"), document.body.childNodes[1]);
@@ -50,7 +50,7 @@
       });
 
       var enemyImg = new Image();
-      enemyImg.src = "enemy_left.png";
+      enemyImg.src = "~/img/enemy_left.png";
       enemyImg.addEventListener("load", function() {
         player2 = new player(30,30,enemyImg, GameArea.canvas.width - 1 - 30, 0, 0, 0, true);
         player2.update();
