@@ -18,29 +18,43 @@
     }
     .p {
       color: white;
-	font-size: 10px;
+	    font-size: 25px;
+      display: inline;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+    .input {
+      color: white;
+      display: inline;
     }
     </style>
   </head>
   <body onload="start()" class="body">
-
+    <br>
+    <br>
+    <p class="p">p1 left</p> <p class="p">p1 right</p><p class="p">p2 left</p> <p class="p">p2 right</p>
+    <br>
+    <input type="file" id="p1l" class="input" accept="image/*"><input type="file" id="p1r" class="input" accept="image/*"><input type="file" id="p2l" class="input" accept="image/*"><input type="file" id="p2r" class="input" accept="image/*">
+    <br>
     <script>
     var player1;
     var player2;
     var key;
     var ready1, ready2, gameOver, shoot1, shoot2 = false;
     var spam1, spam2 = true;
-    var imgFolder = "http://Penguins904.github.io/game/client/img/"
-	var map = {};
+    var imgFolder = "https://Penguins904.github.io/game/client/img/"
+	  var map = {};
+    var custom = {p1l: false, p1r: false, p2l: false, p2r: false};
+    var p1l, p1r, p2l, p2r;
 
     function start(){
       GameArea.start();
       document.body.insertBefore(document.createElement("br"), document.body.childNodes[1]);
       healthBar.start();
-      var playerImg = new Image();
-      playerImg.src = imgFolder + "player_right.png";
-      playerImg.addEventListener("load", function() {
-        player1 = new player(30,30,playerImg, 0, 0, 0, 0, false);
+      p1r = new Image();
+      p1r.src = imgFolder + "player_right.png";
+      p1r.addEventListener("load", function() {
+        player1 = new player(30,30,p1r, 0, 0, 0, 0, false);
         player1.update();
         ready1 = true;
         if (ready2){
@@ -50,10 +64,10 @@
 		document.addEventListener("keyup",keyUpHandler, false);
       });
 
-      var enemyImg = new Image();
-      enemyImg.src = imgFolder + "enemy_left.png";
-      enemyImg.addEventListener("load", function() {
-        player2 = new player(30,30,enemyImg, GameArea.canvas.width - 1 - 30, 0, 0, 0, true);
+      p2l = new Image();
+      p2l.src = imgFolder + "enemy_left.png";
+      p2l.addEventListener("load", function() {
+        player2 = new player(30,30,p2l, GameArea.canvas.width - 1 - 30, 0, 0, 0, true);
         player2.update();
         ready2 = true;
         if (ready1){
@@ -112,7 +126,7 @@
 
     this.bullets = []
     this.update = function() {
-      GameArea.context.drawImage(this.img, this.x, this.y);
+    GameArea.context.drawImage(this.img, this.x, this.y);
     }
     this.createBullet = function() {
       if (this.left){
@@ -150,27 +164,49 @@
   function updategame(){
   if (!gameOver){
     if (player1.x < player2.x && player1.left == true && player2.left == false){
-      var p1Img = new Image();
-      p1Img.src = imgFolder + "player_right.png";
-      player1.img = p1Img
-      player1.left = false
-
-      var p2Img = new Image();
-      p2Img.src = imgFolder + "enemy_left.png"
-      player2.img = p2Img;
+      if (!custom.p1r){
+      var p1r = new Image();
+      p1r.src = imgFolder + "player_right.png";
+      player1.img = p1r;
+      player1.left = false;
+    } else if (custom.p1r) {
+      player1.img = p1r;
+      player1.left = false;
+      player1.update();
+    }
+    if (!custom.p2l) {
+      var p2l = new Image();
+      p2l.src = imgFolder + "enemy_left.png"
+      player2.img = p2l;
       player2.left = true
+    } else if (custom.p2l) {
+      player2.img = p2l;
+      player2.left = true;
+      player2.update();
+    }
+
     }
     if (player2.x < player1.x && player2.left == true && player1.left == false) {
-
-      var p1Img = new Image();
-      p1Img.src = imgFolder + "player_left.png";
-      player1.img = p1Img;
+      if (!custom.p1l) {
+      var p1l = new Image();
+      p1l.src = imgFolder + "player_left.png";
+      player1.img = p1l;
       player1.left = true
-
-      var p2Img = new Image();
-      p2Img.src = imgFolder + "enemy_right.png"
-      player2.img = p2Img;
+    } else if (custom.p1l) {
+      player1.img = p1l;
+      player1.left = true;
+      player1.update();
+    }
+    if (!custom.p2r){
+      var p2r = new Image();
+      p2r.src = imgFolder + "enemy_right.png"
+      player2.img = p2r;
       player2.left = false
+    } else if (custom.p2r) {
+      player2.img = p2r;
+      player2.left = false;
+      player2.update();
+    }
     }
     if (map[37]){
       if (player2.Xspeed > -5){
@@ -264,7 +300,6 @@
         player2.Yspeed++;
       }
     }
-
     GameArea.clear();
 
     player1.update();
@@ -311,6 +346,7 @@
   function setup(){
     drawhealth();
     window.setInterval(updategame, 1000/30);
+    upload();
 
   }
 
@@ -344,7 +380,6 @@ if (player2.bullets.length > 0) {
    player1.x + player1.width > player2.bullets[i].x &&
    player1.y < player2.bullets[i].y + player2.bullets[i].height &&
    player1.height + player1.y > player2.bullets[i].y) {
-	    console.log("player1 test2");
       player2.bullets.splice(i,1);
       i--;
       healthBar.clear();
@@ -360,6 +395,101 @@ if (player2.bullets.length > 0) {
 }
 }
 }
+
+  function upload() {
+    document.getElementById("p1l").onchange = function (evt) {
+      var tgt = evt.target || window.event.srcElement,
+          files = tgt.files;
+
+      if (FileReader && files && files.length) {
+          var fr = new FileReader();
+          fr.onload = function () {
+              p1l = new Image();
+              p1l.src = fr.result;
+              custom.p1l = true;
+              if (player1.left) {
+              player1.img = p1l;
+              player1.update();
+            }
+          }
+          fr.readAsDataURL(files[0]);
+      }
+
+      else {
+          alert("Use a diffrent brouser");
+      }
+    }
+
+    document.getElementById("p1r").onchange = function (evt) {
+      var tgt = evt.target || window.event.srcElement,
+          files = tgt.files;
+
+      if (FileReader && files && files.length) {
+          var fr = new FileReader();
+          fr.onload = function () {
+              p1r = new Image
+              p1r.src = fr.result;
+              custom.p1r = true;
+              if (!player1.left) {
+                player1.img = p1r;
+                player1.update();
+              }
+          }
+          fr.readAsDataURL(files[0]);
+      }
+
+      else {
+          alert("Use a diffrent brouser");
+      }
+    }
+
+    document.getElementById("p2l").onchange = function (evt) {
+      var tgt = evt.target || window.event.srcElement,
+          files = tgt.files;
+
+      if (FileReader && files && files.length) {
+          var fr = new FileReader();
+          fr.onload = function () {
+              p2l = new Image();
+              p2l.src = fr.result;
+              custom.p2l = true;
+              if (player2.left) {
+              player2.img = p2l;
+              player2.update();
+            }
+          }
+          fr.readAsDataURL(files[0]);
+      }
+
+      else {
+          alert("Use a diffrent brouser");
+      }
+    }
+
+    document.getElementById("p2r").onchange = function (evt) {
+      var tgt = evt.target || window.event.srcElement,
+          files = tgt.files;
+
+      if (FileReader && files && files.length) {
+          var fr = new FileReader();
+          fr.onload = function () {
+              p2r = new Image();
+              p2r.src = fr.result;
+              custom.p2r = true;
+              if (!player2.left) {
+              player2.img = p2r;
+              player2.update();
+            }
+          }
+          fr.readAsDataURL(files[0]);
+      }
+
+      else {
+          alert("Use a diffrent brouser");
+      }
+    }
+  }
+
     </script>
   </body>
 </html>
