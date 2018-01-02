@@ -170,10 +170,11 @@
       player1.img = p1r;
       player1.left = false;
     } else if (custom.p1r) {
-	console.log(p1r);
+	p1r.addEventListener("load", function() {
       player1.img = p1r;
       player1.left = false;
       player1.update();
+	});
     }
     if (!custom.p2l) {
       var p2l = new Image();
