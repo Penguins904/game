@@ -3,7 +3,7 @@
 	<!-- By: Jake Jenkins-->
   <head>
     <title>Game</title>
-    <link rel="icon" type="image/gif" href="player_right.png" />
+    <link rel="icon" type="image/gif" href="/img/player_right.png" />
 
     <style>
     .Gameboard {
@@ -23,22 +23,24 @@
       padding-right: 10px;
       padding-left: 10px;
     }
-    .input {
-      color: white;
-      display: inline;
-    }
     </style>
   </head>
   <body onload="start()" class="body">
     <br>
     <br>
-    <p class="p">p1 left</p> <p class="p">p1 right</p><p class="p">p2 left</p> <p class="p">p2 right</p>
+    <button onclick="online()">Play Online</button>
     <br>
-    <input type="file" id="p1l" class="input" accept="image/*"><input type="file" id="p1r" class="input" accept="image/*"><input type="file" id="p2l" class="input" accept="image/*"><input type="file" id="p2r" class="input" accept="image/*">
     <br>
+    <br>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+    var socket = io();
     var player1;
     var player2;
+    var Online = false;
+    var Id = Math.random();
+    var number;
+    var interval;
     var key;
     var ready1, ready2, gameOver, shoot1, shoot2 = false;
     var spam1, spam2 = true;
@@ -46,8 +48,10 @@
 	  var map = {};
     var custom = {p1l: false, p1r: false, p2l: false, p2r: false};
     var p1l, p1r, p2l, p2r;
+    var Setup = false;
 
     function start(){
+      gameOver = false;
       GameArea.start();
       document.body.insertBefore(document.createElement("br"), document.body.childNodes[1]);
       healthBar.start();
@@ -61,7 +65,7 @@
           setup();
         }
         document.addEventListener("keydown",keyDownHandler, false);
-		document.addEventListener("keyup",keyUpHandler, false);
+		    document.addEventListener("keyup",keyUpHandler, false);
       });
 
       p2l = new Image();
@@ -210,6 +214,7 @@
       player2.update();
     }
     }
+    if (!Online) {
     if (map[37]){
       if (player2.Xspeed > -5){
       player2.Xspeed -= 1; // left
@@ -231,9 +236,10 @@
       if (!shoot2) {
           player2.createBullet(); // shift
           shoot2 = true;
-          window.setTimeout(function(){shoot2 = false;}, 500);
+          setTimeout(function(){shoot2 = false;}, 500);
       }
   }
+
    if (map[65]){ // a
       if (player1.Xspeed > -5){
       player1.Xspeed -= 1;
@@ -254,14 +260,74 @@
     if (!shoot1){
       player1.createBullet();
       shoot1 = true;
-      window.setTimeout(function() {shoot1 = false;}, 500)
+      setTimeout(function() {shoot1 = false;}, 500)
     }
   }
+} else if (number) {
+  if (map[37]){
+    console.log("left arrow");
+    if (player2.Xspeed > -5){
+    player2.Xspeed -= 1; // left
+  }
+}
+if (map[38]){
+    if (player2.Yspeed > -5){
+    player2.Yspeed -= 1; // up
+  }
+}  if (map[39]){
+    if (player2.Xspeed < 5){
+    player2.Xspeed += 1; //right
+  }
+}  if (map[40]){
+    if (player2.Yspeed < 5){
+    player2.Yspeed += 1; // down
+  }
+} if (map[16]) {
+    if (!shoot2) {
+        player2.createBullet(); // shift
+        shoot2 = true;
+        setTimeout(function(){shoot2 = false;}, 500);
+    }
+}
+} else if (!number) {
+  if (map[65]){ // a
+    console.log("a");
+     if (player1.Xspeed > -5){
+     player1.Xspeed -= 1;
+   }
+   } if (map[87]){ // w
+     if (player1.Yspeed > -5){
+     player1.Yspeed -= 1;
+   }
+   } if (map[68]){ // d
+     if (player1.Xspeed < 5){
+     player1.Xspeed += 1;
+   }
+   } if (map[83]){ // s
+     if (player1.Yspeed < 5){
+     player1.Yspeed += 1;
+   }
+ } if(map[69]){ // e
+   if (!shoot1){
+     player1.createBullet();
+     shoot1 = true;
+     setTimeout(function() {shoot1 = false;}, 500)
+   }
+ }
+}
+  if (!Online) {
     player1.x += player1.Xspeed;
     player1.y += player1.Yspeed;
-
     player2.x += player2.Xspeed;
     player2.y += player2.Yspeed;
+  }else if (!number) {
+    player1.x += player1.Xspeed;
+    player1.y += player1.Yspeed;
+    console.log(player1.x,player1.y);
+} else if (number) {
+    player2.x += player2.Xspeed;
+    player2.y += player2.Yspeed;
+}
     if (player1.x < 0){
       player1.x = 0;
     } if (player1.x > GameArea.canvas.width - player1.width) {
@@ -337,19 +403,59 @@
         }
       }
     }
+    if (Online) {
+      socket.on("chords", function(data){
+        if (number){
+          player1.x = data.x;
+          player1.y = data.y;
+          //player1.bullets = data.bulets;
+        } else if (!number) {
+          player2.x = data.x;
+          player2.y = data.y;
+          //player2.bullets = data.bulets;
+        }
+      });
+      if (!number) {
+        socket.emit("chords", {
+          x: player1.x,
+          y: player1.y,
+          //bullets: player1.bullets
+        });
+      } else if (number) {
+        socket.emit("chords", {
+          x: player2.x,
+          y: player2.y,
+          //bullets: player2.bullets
+        });
+      }
+      GameArea.clear();
+      player1.update();
+      player2.update();
+      colison();
+    }
   } else {
     if (map[32]){
-      window.location.reload(false);
+      reset();
     }
   }
 }
 
+  function reset() {
+    clearInterval(interval);
+    while(document.body.firstChild){
+      document.body.removeChild(document.body.firstChild);
+    }
+    Setup = false;
+    start();
+  }
+
 
   function setup(){
+    if (!Setup){
     drawhealth();
-    window.setInterval(updategame, 1000/30);
-    upload();
-
+    interval = setInterval(updategame, 1000/30);
+    Setup = true;
+  }
   }
 
   function colison(){
@@ -398,100 +504,56 @@ if (player2.bullets.length > 0) {
 }
 }
 
-  function upload() {
-    document.getElementById("p1l").onchange = function (evt) {
-      var tgt = evt.target || window.event.srcElement,
-          files = tgt.files;
-
-      if (FileReader && files && files.length) {
-          var fr = new FileReader();
-          fr.onload = function () {
-              p1l = new Image();
-              p1l.src = fr.result;
-              custom.p1l = true;
-              if (player1.left) {
-              player1.img = p1l;
-              player1.update();
-            }
-          }
-          fr.readAsDataURL(files[0]);
-      }
-
-      else {
-          alert("Use a diffrent brouser");
-      }
+  function online() {
+    while(document.body.firstChild){
+      document.body.removeChild(document.body.firstChild);
     }
-
-    document.getElementById("p1r").onchange = function (evt) {
-      var tgt = evt.target || window.event.srcElement,
-          files = tgt.files;
-
-      if (FileReader && files && files.length) {
-          var fr = new FileReader();
-          fr.onload = function () {
-              p1r = new Image
-              p1r.src = fr.result;
-              custom.p1r = true;
-              if (!player1.left) {
-                player1.img = p1r;
-                player1.update();
-	    }
-          }
-          fr.readAsDataURL(files[0]);
+    var text = document.createElement("p");
+    text.innerHTML = "enter name:";
+    text.className = "p";
+    document.body.insertBefore(text, document.body.childNodes[0]);
+    var name = document.createElement("input");
+    name.type = "text";
+    document.body.insertBefore(name, document.body.childNodes[1]);
+    var button = document.createElement("button");
+    button.innerHTML = "submit"
+    button.addEventListener("click", function() {
+      socket.emit("newPlayer",{
+        name: name.value,
+        Id: Id
+      });
+      name.value = "";
+      while(document.body.firstChild){
+        document.body.removeChild(document.body.firstChild);
       }
-
-      else {
-          alert("Use a diffrent brouser");
-      }
-    }
-
-    document.getElementById("p2l").onchange = function (evt) {
-      var tgt = evt.target || window.event.srcElement,
-          files = tgt.files;
-
-      if (FileReader && files && files.length) {
-          var fr = new FileReader();
-          fr.onload = function () {
-              p2l = new Image();
-              p2l.src = fr.result;
-              custom.p2l = true;
-              if (player2.left) {
-              player2.img = p2l;
-              player2.update();
-            }
-          }
-          fr.readAsDataURL(files[0]);
-      }
-
-      else {
-          alert("Use a diffrent brouser");
-      }
-    }
-
-    document.getElementById("p2r").onchange = function (evt) {
-      var tgt = evt.target || window.event.srcElement,
-          files = tgt.files;
-
-      if (FileReader && files && files.length) {
-          var fr = new FileReader();
-          fr.onload = function () {
-              p2r = new Image();
-              p2r.src = fr.result;
-              custom.p2r = true;
-              if (!player2.left) {
-              player2.img = p2r;
-              player2.update();
-            }
-          }
-          fr.readAsDataURL(files[0]);
-      }
-
-      else {
-          alert("Use a diffrent brouser");
-      }
-    }
+      var text = document.createElement("p");
+      text.innerHTML = "waiting on another player";
+      text.className = "p";
+      document.body.insertBefore(text, document.body.childNodes[0]);
+    });
+    document.body.insertBefore(button, document.body.childNodes[2]);
   }
-
+  socket.on("leave", function() {
+    GameArea.clear();
+    GameArea.context.fillText("You win, other player disconected")
+  });
+  socket.on("number",  function(data){
+    number = data.number;
+  });
+  socket.on("inGame", function(){
+    while(document.body.firstChild){
+      document.body.removeChild(document.body.firstChild);
+    }
+    Online = true;
+    reset();
+    var numberP = document.createElement("p");
+    number++;
+    numberP.innerHTML = "Player:" + number;
+    numberP.className = "p";
+    document.body.insertBefore(document.createElement("br"), document.body.childNodes[2]);
+    document.body.insertBefore(numberP, document.body.childNodes[3]);
+    number--;
+  });
     </script>
   </body>
 </html>
