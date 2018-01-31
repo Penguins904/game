@@ -34,7 +34,9 @@
     <br>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-    var socket = io();
+    if (var socket = io()) {
+	var socket = io();    
+    }
     var player1;
     var player2;
     var Online = false;
