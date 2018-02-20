@@ -80,7 +80,10 @@
       }, false);
 	var title = document.createElement("h1");
 	title.style.color = "white";
+	title.style.textAlign = "center";
 	document.body.insertBefore(title, document.body.childNodes[0]);
+	var br = document.createElement("br");
+	document.body.insertBefore(title, document.body.childNodes[1]);
   }
     var GameArea = {
     canvas : document.createElement("canvas"),
